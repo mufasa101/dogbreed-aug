@@ -1,4 +1,4 @@
-Below is a detailed README file you can include in your repository. It explains the objectives, dataset setup, code structure, and how to run and interpret the model training:
+Below is a detailed README file Group 6 can include in Group 6r repository. It explains the objectives, dataset setup, code structure, and how to run and interpret the model training:
 
 ---
 
@@ -152,7 +152,7 @@ project/
 ## **5. Running the Project**
 
 1. **Ensure Kaggle Credentials**  
-   - You must have a `kaggle.json` file uploaded and permissions set so `kagglehub` can download.
+   - Group 6 must have a `kaggle.json` file uploaded and permissions set so `kagglehub` can download.
 
 2. **Install Requirements**  
    ```bash
@@ -175,7 +175,7 @@ project/
 - **Shape Mismatch (target vs. output):**  
   Happens if `train_dir` and `val_dir` have different numbers of breed folders. Make sure both contain exactly the same set of classes.
 - **Low Accuracy:**  
-  If you see low accuracy, try:
+  If Group 6 see low accuracy, try:
   1. Increasing epochs.  
   2. Using a deeper model or a pretrained model (transfer learning).  
   3. Ensuring each breed has enough images.
@@ -192,7 +192,7 @@ project/
 ## **8. License & Credits**
 
 - **Stanford Dogs Dataset**: Provided by [Kaggle / Jessica Li](https://www.kaggle.com/jessicali9530/stanford-dogs-dataset). License information is typically in the Kaggle dataset description.  
-- **Code**: Authored by you. Feel free to adopt an open-source license like MIT or Apache 2.0.
+- **Code**: Authored by Group 6. Feel free to adopt an open-source license like MIT or Apache 2.0.
 
 ---
 
