@@ -1,199 +1,264 @@
-Below is a detailed README file you can include in your repository. It explains the objectives, dataset setup, code structure, and how to run and interpret the model training:
+Group 6
+---
+
+# Multimedia Applications: Image Augmentation for Enhanced Machine Learning
+
+## Table of Contents
+- [Overview](#overview)
+- [Dataset Selection and Justification](#dataset-selection-and-justification)
+- [Installation and Environment Setup](#installation-and-environment-setup)
+- [Project Structure](#project-structure)
+- [Data Preprocessing and Augmentation](#data-preprocessing-and-augmentation)
+- [Model Architecture and Training](#model-architecture-and-training)
+- [Results and Analysis](#results-and-analysis)
+- [Usage Instructions](#usage-instructions)
+- [Contributing](#contributing)
+- [License](#license)
 
 ---
 
-# **Stanford Dogs Classification with Selected Breeds**
+## Overview
+This project demonstrates a suite of **advanced image augmentation techniques** using a real-world **Kaggle dog breed dataset**. Our goal is to highlight how augmentation can significantly improve model robustness when dealing with high-resolution images that exhibit varying lighting, orientation, and scale conditions.
 
-This project demonstrates the full pipeline of downloading a subset of the [Stanford Dogs Dataset](https://www.kaggle.com/datasets/jessicali9530/stanford-dogs-dataset), splitting it into train and validation sets, applying image augmentations, and training a simple Convolutional Neural Network (CNN) to classify dog breeds.
+---
 
-## **1. Overview**
+## Dataset Selection and Justification
+- **Dataset Chosen:** [Kaggle Dog Breeds Dataset](https://www.kaggle.com/datasets/jessicali9530/stanford-dogs-dataset)  
+- **Why Dog Breeds?**  
+  - **Realistic Complexity:** Large, high-resolution images with diverse backgrounds and poses.  
+  - **Fine-Grained Classification:** Forces the model to distinguish subtle differences among visually similar classes.  
+  - **Multimedia Relevance:** Reflects authentic use cases where image variety is common.
 
-1. **Dataset**  
-   - The project downloads the Stanford Dogs dataset from Kaggle (via `kagglehub`).
-   - Only **10** dog breeds are selected for demonstration, creating a smaller dataset.
-   - Each breed’s images are split into 80% for training and 20% for validation.
+---
 
-2. **Image Augmentation**  
-   - We create two training data generators:
-     - **Original** generator (no augmentation, just rescaling).
-     - **Augmented** generator (applying random rotations, shifts, flips, etc.).  
-   - A validation generator is used without augmentation, just rescaling.
+## Installation and Environment Setup
+1. **Clone the Repository:**
+   ```bash
+   git clone https://github.com/mufasa101/image_aug.git
+   cd image_aug
+   ```
 
-3. **Model Architecture**  
-   - A simple CNN is defined with 3 convolutional blocks followed by a fully connected head:
-     1. Convolution → MaxPool
-     2. Convolution → MaxPool
-     3. Convolution → MaxPool
-     4. Flatten → Dense → Dropout → Dense(num_classes)
+2. **Create and Activate a Virtual Environment:**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
 
-4. **Training & Visualization**  
-   - Trains the model for 10 epochs on the original data.  
-   - (Optionally) can train a separate model on the augmented data.  
-   - Accuracy and loss curves are plotted to show learning progress.
+3. **Install Dependencies:**
+   ```bash
+   pip install --upgrade pip
+   pip install -r requirements.txt
+   ```
 
-5. **Interpretation**  
-   - Final plots demonstrate the model’s performance.  
-   - Suggestions are given for improvement (more epochs, deeper model, or transfer learning).
+---
 
-## **2. Requirements**
 
-- Python 3.x
-- Kaggle credentials (to download via `kagglehub`)
-- Major Python packages:
-  - `kagglehub`
-  - `numpy`
-  - `matplotlib`
-  - `tensorflow` / `keras`
-  - `scikit-learn`
-  - `shutil`
-  - `os`
-  - `PIL` (usually included with Pillow, if needed by Keras)
 
-Example install commands:
+### Data Setup
+
+We use the **Stanford Dogs Dataset** from Kaggle. Follow these steps to download and set up the dataset:
+
+1. **Install the Kaggle API:**
+   ```bash
+   pip install kaggle
+   ```
+2. **Obtain Kaggle API Credentials:**
+   - Log in to your [Kaggle account](https://www.kaggle.com/).
+   - Under your profile icon, go to **Account**.
+   - Click **Create New API Token**, which downloads `kaggle.json`.
+3. **Place the Credentials File:**
+   - **Linux/macOS:**
+     ```bash
+     mkdir -p ~/.kaggle
+     mv ~/Downloads/kaggle.json ~/.kaggle/
+     chmod 600 ~/.kaggle/kaggle.json
+     ```
+   - **Windows:**
+     1. Create a `.kaggle` folder under `%USERPROFILE%`.
+     2. Move `kaggle.json` there.
+     3. Adjust file permissions so only you can read the file.
+4. **Download the Dataset:**
+   ```bash
+   kaggle datasets download -d jessicali9530/stanford-dogs-dataset
+   ```
+5. **Extract the Dataset:**
+   ```bash
+   mkdir -p data
+   unzip stanford-dogs-dataset.zip -d data/
+   ```
+
+After this, your `data/` folder will contain the necessary images for training, validation, and testing.
+
+---
+
+## Project Structure
+
+
 ```bash
-pip install kagglehub tensorflow scikit-learn matplotlib
+image_aug/
+├── data/                           # Contains downloaded or processed datasets
+├── notebooks/                      # Jupyter notebooks for exploration & demos
+│   ├── data.ipynb                 # Notebook for exploring & preparing the dataset
+│   └── training_experiments.ipynb # Notebook demonstrating model training on original & augmented data
+├── src/                            # Source code
+│   ├── data_loader.py             # Functions for loading & preprocessing data
+│   ├── augmentation.py            # Basic ImageDataGenerator setup
+│   ├── custom_augmentation.py     # Albumentations-based augmentations
+│   ├── model.py                   # CNN model definition & training routines
+│   ├── visualization.py           # Scripts for visualizing original & augmented images
+│   └── ui.py                      # Interactive UI components using ipywidgets
+├── README.md                      # This file
+├── requirements.txt               # Python dependencies
+└── LICENSE                        # License information
 ```
-
-## **3. File/Directory Structure**
-
-Assuming the repository contains:
-```
-project/
-  ├── README.md                  <-- This file
-  ├── main.py                    <-- Main Python script
-  ├── smaller_dataset/           <-- Contains only 10 selected breed folders
-  ├── train/                     <-- Split training set (automatically created)
-  ├── val/                       <-- Split validation set (automatically created)
-  └──
-```
-
-### **Key Directories**
-
-1. **`smaller_dataset/`**  
-   Where the selected 10 breed folders are copied to.  
-
-2. **`train/`** and **`val/`**  
-   After the split, each will have the same 10 breed subfolders.  
-
-## **4. Step-by-Step Explanation of Code**
-
-1. **Download Dataset with KaggleHub**  
-   ```python
-   path = kagglehub.dataset_download("jessicali9530/stanford-dogs-dataset")
-   ```
-   - Downloads the Stanford Dogs dataset into a local directory.
-
-2. **Select 10 Breeds**  
-   ```python
-   selected_breeds = [
-       "n02085936-Maltese_dog",
-       "n02086079-Pekinese",
-       ...
-   ]
-   ```
-   - Lists the breed folders to be retained.  
-
-3. **Copying to a Smaller Directory**  
-   ```python
-   smaller_dataset_dir = os.path.join(path, "smaller_dataset")
-   os.makedirs(smaller_dataset_dir, exist_ok=True)
-
-   for breed in selected_breeds:
-       source = os.path.join(path, "images/Images", breed)
-       dest = os.path.join(smaller_dataset_dir, breed)
-       shutil.copytree(source, dest)
-   ```
-   - Copies only the selected breed folders for demonstration.
-
-4. **Splitting Train/Val**  
-   ```python
-   train_dir = os.path.join(path, 'train')
-   val_dir   = os.path.join(path, 'val')
-   os.makedirs(train_dir, exist_ok=True)
-   os.makedirs(val_dir, exist_ok=True)
-
-   for breed_folder in os.listdir(smaller_dataset_dir):
-       ...
-       # 80/20 split per breed, copying images into train_dir/breed and val_dir/breed
-   ```
-   - Each breed folder is split so both train and validation sets see the same 10 classes.
-
-5. **Data Generators**  
-   ```python
-   original_train_datagen = ImageDataGenerator(rescale=1.0/255)
-   augmented_train_datagen = ImageDataGenerator(
-       rotation_range=30, width_shift_range=0.2, ...
-   )
-   val_datagen = ImageDataGenerator(rescale=1.0/255)
-   ```
-   - Defines how images are loaded and transformed:
-     - **Original**: only rescaling.
-     - **Augmented**: random rotations, shifts, flips, etc.
-     - **Validation**: only rescaling.
-
-6. **Building and Training the CNN**  
-   ```python
-   def build_cnn(num_classes):
-       model = models.Sequential([...])
-       model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-       return model
-
-   num_classes = len(original_train_generator.class_indices)
-   model = build_cnn(num_classes)
-   history = model.fit(original_train_generator, epochs=10, validation_data=val_generator)
-   ```
-   - Creates a simple CNN with a final dense layer equal to the number of classes.  
-   - Trains for 10 epochs, monitoring validation performance.
-
-7. **Visualization**  
-   - A function (`visualize_augmentation`) compares the same images in original vs. augmented forms.  
-   - Another function (`plot_training`) plots accuracy and loss over epochs.
-
-## **5. Running the Project**
-
-1. **Ensure Kaggle Credentials**  
-   - You must have a `kaggle.json` file uploaded and permissions set so `kagglehub` can download.
-
-2. **Install Requirements**  
-   ```bash
-   pip install kagglehub tensorflow scikit-learn matplotlib
-   ```
-
-3. **Run the Main Script**  
-   ```bash
-   python code.py
-   ```
-   or inside a Jupyter notebook / Google Colab cell.
-
-4. **Observe Outputs**  
-   - The code will create `smaller_dataset/` (with selected breeds), then `train/` & `val/` subfolders.  
-   - It will print how many images belong to each set.  
-   - Plots will show up for augmentation examples and training curves.
-
-## **6. Common Issues**
-
-- **Shape Mismatch (target vs. output):**  
-  Happens if `train_dir` and `val_dir` have different numbers of breed folders. Make sure both contain exactly the same set of classes.
-- **Low Accuracy:**  
-  If you see low accuracy, try:
-  1. Increasing epochs.  
-  2. Using a deeper model or a pretrained model (transfer learning).  
-  3. Ensuring each breed has enough images.
-
-## **7. Potential Improvements**
-
-- **Transfer Learning:**  
-  Use a pretrained network like VGG16 or ResNet for better feature extraction with fewer training samples.
-- **Hyperparameter Tuning:**  
-  Adjust learning rate, batch size, or use schedulers.
-- **Data Balancing:**  
-  If one breed has far more images, it may bias the model. Consider balancing the dataset or employing class weighting.
-
-## **8. License & Credits**
-
-- **Stanford Dogs Dataset**: Provided by [Kaggle / Jessica Li](https://www.kaggle.com/jessicali9530/stanford-dogs-dataset). License information is typically in the Kaggle dataset description.  
-- **Code**: Authored by you. Feel free to adopt an open-source license like MIT or Apache 2.0.
 
 ---
 
-**Enjoy exploring dog breed classification with a smaller, more manageable subset of the Stanford Dogs Dataset!**
+## Data Preprocessing and Augmentation
+
+### Preprocessing
+- **Loading & Splitting:** Our `load_images` function splits data into training and test sets, optionally limiting the number of folders for quicker demos.
+- **Resizing & Normalizing:** Images are resized (128×128) and normalized to [0,1].
+- **Error Handling:** Skips corrupt files gracefully to avoid pipeline crashes.
+
+### Augmentation Techniques
+We demonstrate **two** augmentation approaches:
+
+1. **Keras/TensorFlow `ImageDataGenerator`:**  
+   - Rotation (±30°), width/height shifts, shear (±20%), zoom (±20%), and horizontal flips.  
+   - Ideal for quick, on-the-fly augmentation in model training.
+
+2. **Albumentations (Custom Pipeline):**  
+   - Used primarily for visualization.  
+   - Offers more advanced transformations (e.g., brightness, contrast, random noise), giving us deeper insight into how each transformation alters an image.
+
+---
+
+## Model Architecture and Training
+
+### Architecture
+A **Convolutional Neural Network** with:
+- **Convolution + Pooling Blocks:** Incrementally deeper layers to learn complex features.  
+- **Dropout (50%):** Reduces overfitting by randomly dropping neurons.  
+- **Fully Connected Layer:** Adjusted to the number of classes, concluding with a softmax activation for classification.
+
+### Training
+1. **Original Data Model:**  
+   - Baseline training on unaugmented images.  
+   - Typically reveals signs of overfitting or lower generalization.
+
+2. **Augmented Data Model:**  
+   - Trains on data generated via `ImageDataGenerator` (or custom Albumentations, if desired).  
+   - Often yields better generalization and reduced overfitting.
+
+We track training/validation accuracy and loss over epochs to compare performance.
+
+---
+
+## Results and Analysis
+
+1. **Performance Curves:**  
+   - Plots show how the **original** vs. **augmented** models learn differently.  
+   - Augmentation usually narrows the gap between training and validation accuracy.
+
+2. **Confusion Matrix:**  
+   - Highlights class-by-class performance, revealing which breeds are often confused.  
+   - Demonstrates whether augmentation helps improve recognition for challenging classes.
+
+3. **Visual Comparisons:**  
+   - Original vs. augmented images displayed side-by-side.  
+   - Shows how transformations like rotation, shift, and zoom enrich the training set.
+
+**Key Takeaway:** Data augmentation reduces overfitting and boosts the model’s ability to handle real-world variations, making it a critical step for high-resolution, fine-grained classification tasks like dog breed identification.
+
+---
+
+## Usage Instruction
+
+1. **Data Acquisition:**  
+   Follow the [Data Setup](#data-setup) instructions to download and organize the Stanford Dogs Dataset.
+
+Below is an example of how you might **introduce and document** a separate notebook called **`data.ipynb`** in your project. This notebook can serve as a dedicated space for **data exploration, cleaning, and preprocessing** steps, keeping your workflow organized and easy to follow.
+
+---
+
+## **`data.ipynb`** – Data Exploration and Preprocessing
+
+This notebook is designed to **explore** and **prepare** the dataset before training any models. It allows you to visually inspect images, check label distributions, and apply basic preprocessing or cleaning steps.
+
+### **Notebook Overview**
+
+1. **Dataset Inspection:**
+   - Examine folder structure and verify that images are organized as expected.
+   - Print sample file paths, display random images, and confirm they’re properly labeled.
+   - Check for potential issues like missing or corrupt files.
+
+2. **EDA (Exploratory Data Analysis):**
+   - Plot the distribution of classes (e.g., how many images per breed).
+   - Identify imbalances or underrepresented classes.
+   - Possibly visualize basic statistics (image dimensions, aspect ratios, etc.).
+
+3. **Preprocessing:**
+   - Resize images to a consistent shape (e.g., 128×128).
+   - Normalize pixel values to a 0–1 range or other standardization.
+   - (Optional) Crop or remove unnecessary margins if needed.
+
+4. **Splitting or Reorganizing:**
+   - If your dataset isn’t already split into training and testing sets, do so here (using `train_test_split` or a custom approach).
+   - Move or copy files into `train/` and `val/` directories, or handle them with code in `src/data_loader.py`.
+
+5. **Documentation of Findings:**
+   - Record any peculiarities discovered, such as corrupt images or mislabeled samples.
+   - Suggest strategies for dealing with heavily imbalanced classes or low-quality images.
+
+### **Why Have a Separate `data.ipynb`?**
+- **Cleaner Workflow:** By isolating data exploration and cleaning tasks in one notebook, you keep your main training notebook (`training_experiments.ipynb`) focused on model-related steps.  
+- **Reproducibility:** Anyone can open `data.ipynb` to understand how you prepared the dataset before training.  
+- **Debugging:** If there are discrepancies in the data (e.g., class distribution doesn’t match expectations), you can revisit this notebook to pinpoint where the process might have gone awry.
+
+### **Usage Instructions**
+
+1. **Open `data.ipynb`:**  
+   ```bash
+   jupyter notebook notebooks/data.ipynb
+   ```
+2. **Run Cells in Order:**  
+   Start from the top to load images, examine distributions, and perform any required cleaning or splitting.
+3. **Confirm Outputs:**  
+   Check that the final distribution of images aligns with your project’s needs. If you’re limiting folders or images for demonstration, verify that the code handles these cases gracefully.
+
+### **Next Steps**
+Once you’ve verified and preprocessed the data in `data.ipynb`, you can move on to:
+- **`training_experiments.ipynb`:** For model training on original vs. augmented data.
+- **`ui.py` / Interactive Visualization:** For real-time augmentation demos and image comparisons.
+
+---
+
+
+### **Training & Experiments:**  
+   Open and run the notebook in `notebooks/training_experiments.ipynb` to:
+   - Train the model on **original data**.
+   - Train the model on **augmented data**.
+   - Compare the two training runs with performance plots and confusion matrices.
+
+### **Visualization:**  
+   - Use `src/visualization.py` or the interactive UI (`src/ui.py`) to visualize original vs. augmented images.
+   - Experiment with `custom_augmentation.py` (Albumentations) for a more advanced augmentation pipeline.
+### **Interactive UI (Optional):**  
+   - Run `%run -i src/ui.py` in a Jupyter cell to load the dataset, visualize images, and adjust augmentation parameters on the fly.
+
+---
+
+## Contributing
+
+We welcome feedback and contributions! Whether you’d like to refine the augmentation pipeline, experiment with new model architectures, or improve documentation, feel free to open an issue or submit a pull request. Please ensure your changes are well-documented and tested.
+
+---
+
+## License
+
+This project is distributed under the [MIT License](LICENSE). You’re free to use, modify, and distribute this code, provided you include proper attribution.
+
+---
+
+**Group 6** thanks you for exploring **Image Augmentation for Enhanced Machine Learning**. If you encounter any issues or have suggestions for improvement, please open an issue or reach out via our discussion boards. We look forward to your contributions!

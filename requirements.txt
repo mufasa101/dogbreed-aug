@@ -1,0 +1,7 @@
+tensorflow
+Pillow
+matplotlib
+scikit-learn
+ipywidgets
+tqdm
+numpy
