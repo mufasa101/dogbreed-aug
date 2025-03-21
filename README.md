@@ -39,7 +39,7 @@ This project demonstrates a suite of **advanced image augmentation techniques** 
 
    ```bash
    git clone https://github.com/mufasa101/dogbreed-aug.git
-   cd image_aug
+   cd dogbreed-aug
    ```
 
 2. **Create and Activate a Virtual Environment:**
